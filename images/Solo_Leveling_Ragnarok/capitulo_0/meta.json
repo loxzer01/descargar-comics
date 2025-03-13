@@ -1,0 +1,27 @@
+{
+    "manga_title": "Solo Leveling: Ragnarok",
+    "chapter_number": 0,
+    "image_count": 3,
+    "images": [
+        {
+            "url": "https://dashboard.olympusbiblioteca.com/storage/comics/1369/97420/c-1369-452055978_355963970880039_8165777686470577815_n.webp",
+            "number": 1,
+            "filename": "001.jpg"
+        },
+        {
+            "url": "https://dashboard.olympusbiblioteca.com/storage/comics/1369/97420/c-1369-452324507_355964034213366_8199121664416380069_n.webp",
+            "number": 2,
+            "filename": "002.jpg"
+        },
+        {
+            "url": "https://dashboard.olympusbiblioteca.com/storage/comics/1369/97420/c-1369-452747243_355963930880043_3183927413608155647_n.webp",
+            "number": 3,
+            "filename": "003.jpg"
+        }
+    ],
+    "urls": [
+        "https://dashboard.olympusbiblioteca.com/storage/comics/1369/97420/c-1369-452055978_355963970880039_8165777686470577815_n.webp",
+        "https://dashboard.olympusbiblioteca.com/storage/comics/1369/97420/c-1369-452324507_355964034213366_8199121664416380069_n.webp",
+        "https://dashboard.olympusbiblioteca.com/storage/comics/1369/97420/c-1369-452747243_355963930880043_3183927413608155647_n.webp"
+    ]
+}
