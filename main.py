@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# web scrapping de paginas de leer capitulos de mangas
+# Web scrapping de paginas de leer capitulos de mangas
 
-# options a mostrar en consola para que el usuario ponga el numero de la opcion
+# Options a mostrar en consola para que el usuario ponga el numero de la opcion
 # - Olympus = 1
 # - M440.in = 2
 # - TMO = 3
@@ -20,7 +20,7 @@ import time
 
 # Importar módulos específicos para cada sitio
 from scrapers.m440 import get_m440_chapters as m440_get_chapters_impl
-from scrapers.m440 import scrape_m440 as m440_scrape_chapter_impl
+from scrapers.m440_scraper import scrape_m440 as m440_scrape_chapter_impl
 from scrapers.m440 import process_chapter_links as m440_process_chapter_links_impl
 
 # Importar utilidades comunes
@@ -40,8 +40,8 @@ def main():
     print("Selecciona una opción:")
     print("1. Olympus")
     print("2. M440.in")
-    print("3. TMO")
-    print("4. Imanga")
+    print("3. Inmanga")
+    print("4. TMO")
     
     option = input("Ingresa el número de la opción: ")
     
@@ -110,12 +110,22 @@ def main():
             
             m440_scrape_chapter_impl(chapter['url'], download_images)
     elif option == "3":
+        url = input("Ingresa la URL del capítulo de Inmanga: ")
+        download_option = input("¿Deseas descargar las imágenes? (s/n): ").lower()
+        download_images = download_option == 's' or download_option == 'si'
+        
+        # Opción para descargar capítulos consecutivos
+        consecutive_option = input("¿Deseas descargar capítulos consecutivos? (s/n): ").lower()
+        if consecutive_option == 's' or consecutive_option == 'si':
+            num_chapters = input("¿Cuántos capítulos adicionales quieres descargar? (número o 'todos'): ")
+            from scrapers.inmanga_scraper import scrape_inmanga_consecutive
+            scrape_inmanga_consecutive(url, download_images, num_chapters)
+        else:
+            from scrapers.inmanga_scraper import scrape_inmanga
+            scrape_inmanga(url, download_images)
+    elif option == "4":
         url = input("Ingresa la URL del capítulo de TMO: ")
         # Función para TMO (pendiente de implementar)
-        print("Funcionalidad no implementada aún")
-    elif option == "4":
-        url = input("Ingresa la URL del capítulo de Imanga: ")
-        # Función para Imanga (pendiente de implementar)
         print("Funcionalidad no implementada aún")
     else:
         print("Opción no válida")

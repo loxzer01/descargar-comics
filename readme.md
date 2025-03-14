@@ -4,11 +4,14 @@ Este es un script para descargar capítulos de mangas desde diferentes sitios we
 
 ## Características
 
-- Soporte para múltiples sitios (actualmente funciona con Olympus)
+- Soporte para múltiples sitios (actualmente funciona con Olympus, M440.in e Inmanga)
 - Descarga automática de imágenes de capítulos
 - Opción para generar solo metadatos sin descargar imágenes
 - Organización automática en carpetas por manga y capítulo
 - Generación de archivos meta.json con información del manga y capítulo
+- Descarga de capítulos consecutivos
+- Descarga de rangos específicos de capítulos
+- Soporte para sitios que utilizan JavaScript para cargar contenido (mediante Playwright)
 
 ## Requisitos
 
@@ -16,10 +19,12 @@ Este es un script para descargar capítulos de mangas desde diferentes sitios we
 - Bibliotecas requeridas:
   - requests
   - beautifulsoup4
+  - playwright
   - re (estándar)
   - urllib.parse (estándar)
   - json (estándar)
   - os (estándar)
+  - asyncio (estándar)
 
 ## Instalación
 
@@ -27,9 +32,13 @@ Este es un script para descargar capítulos de mangas desde diferentes sitios we
 2. Instala las dependencias:
 
 ```bash
-pip install requests beautifulsoup4
+pip install requests beautifulsoup4 playwright
 ```
 
+3. Instala los navegadores necesarios para Playwright:
+```bash
+python -m playwright install
+ ```
 ## Uso
 
 1. Ejecuta el script principal:
@@ -43,19 +52,29 @@ python main.py
    - Proporciona la URL del capítulo que deseas descargar
    - Elige si deseas descargar las imágenes o solo generar el archivo meta.json
 
+
 ## Estructura del Proyecto
 
 ```
 scrapping-scan/
-├── main.py         # Script principal
-├── images/         # Directorio donde se guardan los mangas
+├── main.py                # Script principal
+├── scrapers/              # Módulos específicos para cada sitio
+│   ├── m440.py            # Scraper para M440.in
+│   ├── m440_scraper.py    # Implementación de scraping para M440.in
+│   ├── inmanga_scraper.py # Scraper para Inmanga
+│   └── ...
+├── utils/                 # Utilidades comunes
+│   ├── file_utils.py      # Funciones para manejo de archivos
+│   ├── http_utils.py      # Funciones para peticiones HTTP
+│   └── ...
+├── images/                # Directorio donde se guardan los mangas
 │   ├── [nombre_manga]/
 │   │   ├── capitulo_[número]/
-│   │   │   ├── 00.webp
-│   │   │   ├── 01.webp
+│   │   │   ├── 001.jpg
+│   │   │   ├── 002.jpg
 │   │   │   ├── ...
 │   │   │   └── meta.json
-└── readme.md       # Este archivo
+└── readme.md              # Este archivo
 ```
 
 ## Formato de meta.json
@@ -64,29 +83,48 @@ El archivo `meta.json` contiene la siguiente información:
 
 ```json
 {
-  "manga_name": "Nombre del manga",
-  "chapter_name": "Capítulo X",
+  "manga_title": "Nombre del manga",
   "chapter_number": X,
-  "total_images": 25,
+  "image_count": 25,
   "images": [
     {
-      "url": "https://ejemplo.com/imagen.webp",
+      "url": "https://ejemplo.com/imagen.jpg",
       "number": 1,
-      "filename": "00.webp",
-      "description": "Descripción de la imagen"
+      "filename": "001.jpg"
     },
     // más imágenes...
+  ],
+  "urls": [
+    "https://ejemplo.com/imagen1.jpg",
+    "https://ejemplo.com/imagen2.jpg",
+    // más URLs...
   ]
 }
 ```
 
+
 ## Sitios Soportados
 
 1. Olympus (olympusbiblioteca.com) - Totalmente implementado
-2. M440.in - Pendiente de implementar
-3. TMO - Pendiente de implementar
-4. Imanga - Pendiente de implementar
+   - Descarga de capítulos individuales
+   - Descarga de capítulos consecutivos
+2. M440.in - Totalmente implementado
+   - Descarga de capítulos individuales
+   - Descarga de rangos específicos de capítulos
+   - Soporte para contenido cargado con JavaScript (mediante Playwright)
+3. Inmanga - Totalmente implementado
+   - Descarga de capítulos individuales
+   - Descarga de capítulos consecutivos
+4. TMO - Pendiente de implementar
+
+
+## Características Avanzadas
+
+- Descarga de rangos de capítulos : Para M440.in, puedes especificar un rango de capítulos a descargar (ejemplo: 1-10)
+- Descarga de capítulos consecutivos : Para Olympus e Inmanga, puedes descargar automáticamente un número específico de capítulos consecutivos
+- Soporte para JavaScript : Utiliza Playwright para sitios que cargan el contenido dinámicamente con JavaScript
+
 
 ## Contribuir
 
-Si deseas contribuir a este proyecto, puedes implementar el soporte para los sitios pendientes o mejorar las funcionalidades existentes.
+Si deseas contribuir a este proyecto, puedes implementar el soporte para los sitios pendientes o mejorar las funcionalidades existentes
