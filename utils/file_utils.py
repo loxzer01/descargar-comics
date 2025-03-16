@@ -34,8 +34,18 @@ def create_manga_directory(manga_title):
     
     return manga_dir
 
-def create_chapter_directory(manga_title, chapter_number, chapter_title=None):
-    """Crea un directorio para un capítulo específico de un manga."""
+def create_chapter_directory(manga_title, chapter_number, chapter_title=None, force_new=False):
+    """Crea un directorio para un capítulo específico de un manga.
+    
+    Args:
+        manga_title: Título del manga
+        chapter_number: Número del capítulo
+        chapter_title: Título del capítulo (opcional)
+        force_new: Si es True, crea un nuevo directorio sin preguntar
+        
+    Returns:
+        str: Ruta al directorio del capítulo
+    """
     manga_dir = create_manga_directory(manga_title)
     
     # Sanitizar número de capítulo para nombre de directorio
@@ -46,7 +56,30 @@ def create_chapter_directory(manga_title, chapter_number, chapter_title=None):
     chapter_dir_name = f"capitulo_{chapter_number}"
     chapter_dir = os.path.join(manga_dir, chapter_dir_name)
     
-    if not os.path.exists(chapter_dir):
+    # Verificar si el directorio ya existe
+    if os.path.exists(chapter_dir):
+        # Verificar si hay contenido en el directorio
+        has_content = len(os.listdir(chapter_dir)) > 0
+        
+        if has_content and not force_new:
+            # Preguntar al usuario qué hacer
+            action = input(f"El directorio para {manga_title} - Capítulo {chapter_number} ya existe. ¿Qué deseas hacer?\n"
+                          f"1. Usar el directorio existente\n"
+                          f"2. Sobreescribir (eliminar contenido actual)\n"
+                          f"Selecciona una opción (1/2): ")
+            
+            if action == "2":
+                # Eliminar archivos existentes (excepto meta.json para preservar metadatos)
+                for item in os.listdir(chapter_dir):
+                    if item != "meta.json":
+                        item_path = os.path.join(chapter_dir, item)
+                        if os.path.isfile(item_path):
+                            os.remove(item_path)
+                print(f"Contenido del directorio {chapter_dir} eliminado para sobreescribir.")
+            else:
+                print(f"Usando directorio existente: {chapter_dir}")
+    else:
+        # Crear directorio si no existe
         os.mkdir(chapter_dir)
     
     return chapter_dir
