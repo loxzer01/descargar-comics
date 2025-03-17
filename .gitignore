@@ -1,5 +1,3 @@
 images
 .env.local
-strapi
-strapi_upload.py 
-cloudinary
+test.py

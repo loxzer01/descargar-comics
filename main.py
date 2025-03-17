@@ -369,6 +369,12 @@ def save_images(manga_title, chapter_number, image_elements, download_images=Tru
                 
                 # Nombre de archivo para esta imagen
                 filename = f"{index+1:03d}.jpg"  # Formato: 001.jpg, 002.jpg, etc.
+                
+                # si filename tiene un parentesis es una imagen de anuncios
+                if '(' in img_url:
+                    print(f"Saltando imagen {index+1} porque parece ser un anuncio")
+                    continue
+
                 filepath = os.path.join(chapter_dir, filename)
                 
                 # Añadir a la lista de imágenes
