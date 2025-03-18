@@ -1,0 +1,15 @@
+{
+    "manga_title": "Regresión absoluta",
+    "chapter_number": 6,
+    "image_count": 1,
+    "images": [
+        {
+            "url": "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97816/c-1382-1.webp",
+            "number": 1,
+            "filename": "001.jpg"
+        }
+    ],
+    "urls": [
+        "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97816/c-1382-1.webp"
+    ]
+}

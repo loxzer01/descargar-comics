@@ -17,7 +17,6 @@ import re
 from urllib.parse import urlparse, urljoin
 import sys
 import time
-
 # Importar módulos específicos para cada sitio
 from scrapers.m440 import get_m440_chapters as m440_get_chapters_impl
 from scrapers.m440_scraper import scrape_m440 as m440_scrape_chapter_impl
@@ -179,6 +178,8 @@ def scrape_olympus(url, download_images=True):
             # Extraer solo los dígitos y convertir a entero
             try:
                 chapter_number = int(re.search(r'\d+', chapter_text).group())
+                print(f"Capítulo: {chapter_text}")
+                print(f"Capítulo: {chapter_text}")
             except (AttributeError, ValueError):
                 print("No se pudo convertir el número de capítulo a entero. Usando 0 como valor predeterminado.")
         
@@ -225,6 +226,12 @@ def scrape_olympus(url, download_images=True):
                         chapter_match = re.search(r'capitulo\s+(\d+)', parts[1].lower())
                         if chapter_match and chapter_number == 0:
                             chapter_number = int(chapter_match.group(1))
+                        
+                        # capituloStr = str(chapter_number)
+                        # if int(capituloStr.split('.')[1]) > 0:
+                        #     chapter_number = None
+                        # else:
+                        #     chapter_number = int(chapter_match.group(1))
                 # Solo necesitamos verificar una imagen, ya que todas deberían tener la misma información
                 break
         
@@ -238,7 +245,8 @@ def scrape_olympus(url, download_images=True):
             print(f"Capítulo siguiente disponible: {next_chapter_url}")
         
         # Procesar y guardar las imágenes
-        save_images(manga_title, chapter_number, image_elements, download_images)
+        if chapter_number != None:
+            save_images(manga_title, chapter_number, image_elements, download_images)
         
         # Devolver información útil para navegación entre capítulos
         return {

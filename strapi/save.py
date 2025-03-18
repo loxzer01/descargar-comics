@@ -328,6 +328,12 @@ class EpisodeManager:
 
         if 'images' in episode_data and isinstance(episode_data['images'], list):
             uploaded_images = await uploadImage.upload_images(episode_data['images'], str(episode_data['episode']), as_media=True, retries=3)
+            
+            # Verificar si hubo un error crítico durante la subida de imágenes
+            if uploaded_images is None:
+                print(f"ERROR CRÍTICO: Falló la subida de imágenes para el episodio {episode_data['episode']}")
+                print(f"Deteniendo el proceso de subida del episodio.")
+                return {"error": "Falló la subida de imágenes para el episodio"}
     
             # Extraer los IDs de las imágenes subidas
             image_ids = []
@@ -346,6 +352,12 @@ class EpisodeManager:
                         for item in img['data']:
                             if isinstance(item, dict) and 'id' in item:
                                 image_ids.append(item['id'])
+            
+            # Verificar si se obtuvieron IDs de imágenes
+            if not image_ids:
+                print(f"ERROR CRÍTICO: No se obtuvieron IDs de imágenes para el episodio {episode_data['episode']}")
+                print(f"Deteniendo el proceso de subida del episodio.")
+                return {"error": "No se obtuvieron IDs de imágenes para el episodio"}
             
             print(image_ids)
             # Asociar las imágenes al campo 'images'
@@ -470,7 +482,13 @@ async def save_comic_and_episodes(comic_data: Dict, episodes: List[Dict]) -> Dic
             episode['episode'] = 0
             
         print(f"Procesando episodio {episode.get('episode', 'desconocido')}")
-        await episode_manager.create_or_update_episode(document_id, episode)
+        result = await episode_manager.create_or_update_episode(document_id, episode)
+        
+        # Verificar si hubo un error en la creación/actualización del episodio
+        if isinstance(result, dict) and 'error' in result:
+            print(f"\nERROR CRÍTICO: Falló la subida del episodio {episode.get('episode', 'desconocido')}: {result['error']}")
+            print(f"Deteniendo el proceso de subida de episodios.\n")
+            return {"error": f"Falló la subida del episodio {episode.get('episode', 'desconocido')}"}
 
     return comic
 

@@ -1,0 +1,339 @@
+{
+    "manga_title": "Regresión absoluta",
+    "chapter_number": 1,
+    "image_count": 55,
+    "images": [
+        {
+            "url": "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/1_01.webp",
+            "number": 1,
+            "filename": "001.jpg"
+        },
+        {
+            "url": "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/1_02.webp",
+            "number": 2,
+            "filename": "002.jpg"
+        },
+        {
+            "url": "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/2_01.webp",
+            "number": 3,
+            "filename": "003.jpg"
+        },
+        {
+            "url": "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/2_02.webp",
+            "number": 4,
+            "filename": "004.jpg"
+        },
+        {
+            "url": "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/3_01.webp",
+            "number": 5,
+            "filename": "005.jpg"
+        },
+        {
+            "url": "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/3_02.webp",
+            "number": 6,
+            "filename": "006.jpg"
+        },
+        {
+            "url": "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/4_01.webp",
+            "number": 7,
+            "filename": "007.jpg"
+        },
+        {
+            "url": "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/4_02.webp",
+            "number": 8,
+            "filename": "008.jpg"
+        },
+        {
+            "url": "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/5_01.webp",
+            "number": 9,
+            "filename": "009.jpg"
+        },
+        {
+            "url": "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/5_02.webp",
+            "number": 10,
+            "filename": "010.jpg"
+        },
+        {
+            "url": "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/6_01.webp",
+            "number": 11,
+            "filename": "011.jpg"
+        },
+        {
+            "url": "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/6_02.webp",
+            "number": 12,
+            "filename": "012.jpg"
+        },
+        {
+            "url": "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/7_01.webp",
+            "number": 13,
+            "filename": "013.jpg"
+        },
+        {
+            "url": "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/7_02.webp",
+            "number": 14,
+            "filename": "014.jpg"
+        },
+        {
+            "url": "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/8_01.webp",
+            "number": 15,
+            "filename": "015.jpg"
+        },
+        {
+            "url": "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/8_02.webp",
+            "number": 16,
+            "filename": "016.jpg"
+        },
+        {
+            "url": "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/8_03.webp",
+            "number": 17,
+            "filename": "017.jpg"
+        },
+        {
+            "url": "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/9_01.webp",
+            "number": 18,
+            "filename": "018.jpg"
+        },
+        {
+            "url": "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/9_02.webp",
+            "number": 19,
+            "filename": "019.jpg"
+        },
+        {
+            "url": "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/10_01.webp",
+            "number": 20,
+            "filename": "020.jpg"
+        },
+        {
+            "url": "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/10_02.webp",
+            "number": 21,
+            "filename": "021.jpg"
+        },
+        {
+            "url": "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/11_01.webp",
+            "number": 22,
+            "filename": "022.jpg"
+        },
+        {
+            "url": "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/11_02.webp",
+            "number": 23,
+            "filename": "023.jpg"
+        },
+        {
+            "url": "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/12_01.webp",
+            "number": 24,
+            "filename": "024.jpg"
+        },
+        {
+            "url": "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/12_02.webp",
+            "number": 25,
+            "filename": "025.jpg"
+        },
+        {
+            "url": "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/13_01.webp",
+            "number": 26,
+            "filename": "026.jpg"
+        },
+        {
+            "url": "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/13_02.webp",
+            "number": 27,
+            "filename": "027.jpg"
+        },
+        {
+            "url": "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/14_01.webp",
+            "number": 28,
+            "filename": "028.jpg"
+        },
+        {
+            "url": "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/14_02.webp",
+            "number": 29,
+            "filename": "029.jpg"
+        },
+        {
+            "url": "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/14_03.webp",
+            "number": 30,
+            "filename": "030.jpg"
+        },
+        {
+            "url": "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/15_01.webp",
+            "number": 31,
+            "filename": "031.jpg"
+        },
+        {
+            "url": "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/15_02.webp",
+            "number": 32,
+            "filename": "032.jpg"
+        },
+        {
+            "url": "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/15_03.webp",
+            "number": 33,
+            "filename": "033.jpg"
+        },
+        {
+            "url": "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/16_01.webp",
+            "number": 34,
+            "filename": "034.jpg"
+        },
+        {
+            "url": "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/16_02.webp",
+            "number": 35,
+            "filename": "035.jpg"
+        },
+        {
+            "url": "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/16_03.webp",
+            "number": 36,
+            "filename": "036.jpg"
+        },
+        {
+            "url": "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/17_01.webp",
+            "number": 37,
+            "filename": "037.jpg"
+        },
+        {
+            "url": "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/17_02.webp",
+            "number": 38,
+            "filename": "038.jpg"
+        },
+        {
+            "url": "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/18_01.webp",
+            "number": 39,
+            "filename": "039.jpg"
+        },
+        {
+            "url": "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/18_02.webp",
+            "number": 40,
+            "filename": "040.jpg"
+        },
+        {
+            "url": "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/18_03.webp",
+            "number": 41,
+            "filename": "041.jpg"
+        },
+        {
+            "url": "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/19_01.webp",
+            "number": 42,
+            "filename": "042.jpg"
+        },
+        {
+            "url": "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/19_02.webp",
+            "number": 43,
+            "filename": "043.jpg"
+        },
+        {
+            "url": "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/20_01.webp",
+            "number": 44,
+            "filename": "044.jpg"
+        },
+        {
+            "url": "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/20_02.webp",
+            "number": 45,
+            "filename": "045.jpg"
+        },
+        {
+            "url": "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/21_01.webp",
+            "number": 46,
+            "filename": "046.jpg"
+        },
+        {
+            "url": "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/21_02.webp",
+            "number": 47,
+            "filename": "047.jpg"
+        },
+        {
+            "url": "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/Regresión-absoluta.webp",
+            "number": 48,
+            "filename": "048.jpg"
+        },
+        {
+            "url": "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/cambio-de-discord.webp",
+            "number": 49,
+            "filename": "049.jpg"
+        },
+        {
+            "url": "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/donadores-discord.webp",
+            "number": 50,
+            "filename": "050.jpg"
+        },
+        {
+            "url": "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/mira-en-la-web.webp",
+            "number": 51,
+            "filename": "051.jpg"
+        },
+        {
+            "url": "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/x.webp",
+            "number": 52,
+            "filename": "052.jpg"
+        },
+        {
+            "url": "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/z.webp",
+            "number": 53,
+            "filename": "053.jpg"
+        },
+        {
+            "url": "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/z_01.webp",
+            "number": 54,
+            "filename": "054.jpg"
+        },
+        {
+            "url": "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/z_02.webp",
+            "number": 55,
+            "filename": "055.jpg"
+        }
+    ],
+    "urls": [
+        "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/1_01.webp",
+        "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/1_02.webp",
+        "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/2_01.webp",
+        "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/2_02.webp",
+        "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/3_01.webp",
+        "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/3_02.webp",
+        "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/4_01.webp",
+        "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/4_02.webp",
+        "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/5_01.webp",
+        "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/5_02.webp",
+        "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/6_01.webp",
+        "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/6_02.webp",
+        "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/7_01.webp",
+        "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/7_02.webp",
+        "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/8_01.webp",
+        "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/8_02.webp",
+        "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/8_03.webp",
+        "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/9_01.webp",
+        "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/9_02.webp",
+        "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/10_01.webp",
+        "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/10_02.webp",
+        "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/11_01.webp",
+        "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/11_02.webp",
+        "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/12_01.webp",
+        "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/12_02.webp",
+        "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/13_01.webp",
+        "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/13_02.webp",
+        "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/14_01.webp",
+        "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/14_02.webp",
+        "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/14_03.webp",
+        "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/15_01.webp",
+        "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/15_02.webp",
+        "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/15_03.webp",
+        "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/16_01.webp",
+        "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/16_02.webp",
+        "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/16_03.webp",
+        "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/17_01.webp",
+        "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/17_02.webp",
+        "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/18_01.webp",
+        "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/18_02.webp",
+        "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/18_03.webp",
+        "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/19_01.webp",
+        "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/19_02.webp",
+        "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/20_01.webp",
+        "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/20_02.webp",
+        "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/21_01.webp",
+        "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/21_02.webp",
+        "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/Regresión-absoluta.webp",
+        "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/cambio-de-discord.webp",
+        "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/donadores-discord.webp",
+        "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/mira-en-la-web.webp",
+        "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/x.webp",
+        "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/z.webp",
+        "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/z_01.webp",
+        "https://dashboard.olympusbiblioteca.com/storage/comics/1382/97493/z_02.webp"
+    ]
+}

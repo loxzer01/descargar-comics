@@ -5,7 +5,8 @@ import asyncio
 import json
 from typing import List, Dict
 from dotenv import load_dotenv
-from .uploadOptimized import upload_and_get_optimized_url
+# Comentado temporalmente para deshabilitar el optimizador
+# from .uploadOptimized import upload_and_get_optimized_url
 # Cargar variables de entorno
 load_dotenv('.env.local')
 
@@ -91,54 +92,85 @@ class ImageUploader:
                 return len(image_data)
 
     async def upload_images(self, images: List[Dict], path: str = "comic", as_media: bool = False, retries: int = 3) -> List[Dict]:
-        """Sube múltiples imágenes a Strapi, seleccionando la más ligera entre la original y la optimizada.
+        """Sube múltiples imágenes a Strapi, sin usar el optimizador.
 
         Args:
             images: Lista de diccionarios con 'url' y 'filename'.
             path: Ruta en Strapi donde se almacenarán las imágenes.
             as_media: Si True, sube las imágenes como archivos multimedia.
             retries: Número de intentos por imagen.
+            
+        Returns:
+            List[Dict]: Lista de resultados o None si hubo un error crítico que detuvo el proceso.
         """
+        # Patrones de URL a ignorar
+        skip_patterns = [
+            'recluta-Limpiador.webp',
+            'donadores-discord-agosto.webp',
+            'z_02.webp',
+            'z_01.webp',
+            'x.webp',
+            'z.webp'
+        ]
+        
         results = []
         for image in images:
             print(f"Procesando imagen: {image['filename']}")
-            original_url = image['url']
-            optimized_url = upload_and_get_optimized_url(original_url)
+            url_to_upload = image['url']
             
-            if not optimized_url:
-                print(f"No se pudo optimizar la imagen {original_url}")
-                results.append({'url': original_url, 'error': 'No se pudo optimizar la imagen'})
-                continue
+            # Verificar si la URL contiene alguno de los patrones a ignorar
+            should_skip = False
+            for pattern in skip_patterns:
+                if pattern in url_to_upload:
+                    print(f"Omitiendo imagen con patrón ignorado: {pattern} en {url_to_upload}")
+                    should_skip = True
+                    break
+                    
+            if should_skip:
+                continue  # Saltar esta imagen y continuar con la siguiente
             
-            # Obtener el tamaño de la imagen original
-            original_size = await self.get_image_size(original_url)
-            if original_size is None:
-                print(f"No se pudo obtener el tamaño de la imagen original {original_url}")
-                results.append({'url': original_url, 'error': 'No se pudo obtener el tamaño de la imagen original'})
-                continue
-            
-            # Obtener el tamaño de la imagen optimizada
-            optimized_size = await self.get_image_size(optimized_url)
-            if optimized_size is None:
-                print(f"No se pudo obtener el tamaño de la imagen optimizada {optimized_url}")
-                results.append({'url': optimized_url, 'error': 'No se pudo obtener el tamaño de la imagen optimizada'})
-                continue
-            
-            # Decidir cuál imagen subir
-            if optimized_size < original_size:
-                url_to_upload = optimized_url
-                print(f"La imagen optimizada es más ligera: {optimized_size} vs {original_size}")
-            else:
-                url_to_upload = original_url
-                print(f"La imagen original es más ligera o igual: {original_size} vs {optimized_size}")
+            # Comentado temporalmente para deshabilitar el optimizador
+            # optimized_url = upload_and_get_optimized_url(original_url)
+            # 
+            # if not optimized_url:
+            #     print(f"ERROR CRÍTICO: No se pudo optimizar la imagen {original_url}")
+            #     print(f"Deteniendo la subida del capítulo debido a un error crítico.")
+            #     return None  # Detener todo el proceso si no se puede optimizar
+            # 
+            # # Obtener el tamaño de la imagen original
+            # original_size = await self.get_image_size(original_url)
+            # if original_size is None:
+            #     print(f"ERROR CRÍTICO: No se pudo obtener el tamaño de la imagen original {original_url}")
+            #     print(f"Deteniendo la subida del capítulo debido a un error crítico.")
+            #     return None  # Detener todo el proceso si no se puede obtener el tamaño
+            # 
+            # # Obtener el tamaño de la imagen optimizada
+            # optimized_size = await self.get_image_size(optimized_url)
+            # if optimized_size is None:
+            #     print(f"ERROR CRÍTICO: No se pudo obtener el tamaño de la imagen optimizada {optimized_url}")
+            #     print(f"Deteniendo la subida del capítulo debido a un error crítico.")
+            #     return None  # Detener todo el proceso si no se puede obtener el tamaño
+            # 
+            # # Decidir cuál imagen subir
+            # if optimized_size < original_size:
+            #     url_to_upload = optimized_url
+            #     print(f"La imagen optimizada es más ligera: {optimized_size} vs {original_size}")
+            # else:
+            #     url_to_upload = original_url
+            #     print(f"La imagen original es más ligera o igual: {original_size} vs {optimized_size}")
             
             filename = image['filename']
             try:
                 result = await self.upload_image(url_to_upload, path, as_media, filename, retries)
+                if 'error' in result:
+                    print(f"ERROR CRÍTICO: Falló la subida de la imagen {filename}: {result['error']}")
+                    print(f"Deteniendo la subida del capítulo debido a un error crítico.")
+                    return None  # Detener todo el proceso si falla la subida
                 results.append(result)
             except Exception as e:
-                print(f"Error al subir {url_to_upload}: {str(e)}")
-                results.append({'url': url_to_upload, 'error': str(e)})
+                print(f"ERROR CRÍTICO: Error al subir {url_to_upload}: {str(e)}")
+                print(f"Deteniendo la subida del capítulo debido a un error crítico.")
+                return None  # Detener todo el proceso si hay una excepción
         return results
         
 # Función principal
@@ -262,6 +294,10 @@ async def main():
             
             # Subir las imágenes con reintentos
             results = await uploader.upload_images(images, upload_path, as_media=True, retries=3)
+            if results is None:
+                print(f"\nERROR: Se detuvo la subida del capítulo {chapter_number} debido a errores en la subida de imágenes.")
+                print(f"Pasando al siguiente capítulo...\n")
+                continue  # Saltar al siguiente capítulo
             print(results);
         
 if __name__ == "__main__":

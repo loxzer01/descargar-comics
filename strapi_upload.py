@@ -165,10 +165,18 @@ async def upload_manga_from_directory(manga_dir):
     try:
         print(f"Guardando {manga_name} con {len(episodes)} capítulos en Strapi...")
         result = await save_comic_and_episodes(comic_data, episodes)
+        
+        # Verificar si hubo un error en el resultado
+        if isinstance(result, dict) and 'error' in result:
+            print(f"\nERROR: No se pudo completar la subida de {manga_name}: {result['error']}")
+            print(f"La subida del manga se ha detenido debido a errores.\n")
+            return None
+            
         print(f"Manga {manga_name} guardado exitosamente en Strapi")
         return result
     except Exception as e:
-        print(f"Error al guardar en Strapi: {str(e)}")
+        print(f"\nERROR CRÍTICO al guardar en Strapi: {str(e)}")
+        print(f"La subida del manga se ha detenido debido a un error crítico.\n")
         return None
 
 async def main():
