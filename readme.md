@@ -1,3 +1,19 @@
+# Vesion Local
+## Instalación
+1. Clona el repositorio o descarga los archivos del proyecto.
+2. Instala las dependencias necesarias. Puedes hacerlo utilizando `pip`:
+```bash
+pip install -r requirements.txt
+```
+
+## Uso
+1. Ejecuta el script principal:
+```bash
+python main.py # para descargar las imagenes
+python strapi_upload.py # para subir las imagenes a strapi
+```
+
+
 # Scraping de Mangas
 
 Este es un script para descargar capítulos de mangas desde diferentes sitios web de lectura en español.

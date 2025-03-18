@@ -1,0 +1,17 @@
+# Web scraping dependencies
+requests==2.31.0
+beautifulsoup4==4.12.2
+playwright==1.40.0
+
+# Async HTTP and utilities
+aiohttp==3.9.1
+asyncio==3.4.3
+
+# Environment variables management
+python-dotenv==1.0.0
+
+# Image processing and cloud storage
+cloudinary==1.36.0
+
+# Utility packages
+urllib3==2.0.7
