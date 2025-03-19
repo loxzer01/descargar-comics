@@ -455,7 +455,7 @@ async def save_comic_and_episodes(comic_data: Dict, episodes: List[Dict]) -> Dic
                 try:
                     choice = input("\nSeleccione el número del cómic correcto (0 para cancelar): ")
                     if choice == '0':
-                        return comic
+                        return {"error": "Selección cancelada por el usuario"}
                     choice_idx = int(choice) - 1
                     if 0 <= choice_idx < len(similar_comics):
                         comic_id = similar_comics[choice_idx]['id']
@@ -467,7 +467,7 @@ async def save_comic_and_episodes(comic_data: Dict, episodes: List[Dict]) -> Dic
         
         if not comic_id:
             print("No se encontraron cómics similares o se canceló la selección.")
-            return comic
+            return {"error": "No se encontraron cómics similares o se canceló la selección."}
 
     # Create or update episodes
     print(f"Procesando {len(episodes)} episodios para el cómic ID: {comic_id}")
@@ -490,7 +490,8 @@ async def save_comic_and_episodes(comic_data: Dict, episodes: List[Dict]) -> Dic
             print(f"Deteniendo el proceso de subida de episodios.\n")
             return {"error": f"Falló la subida del episodio {episode.get('episode', 'desconocido')}"}
 
-    return comic
+    # Return a success response with the comic ID
+    return {"id": comic_id, "documentId": document_id, "status": "success"}
 
 # Example usage
 async def main():
