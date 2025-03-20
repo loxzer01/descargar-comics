@@ -43,6 +43,32 @@ class ComicManager:
             except Exception as e:
                 print(f"Unexpected error when getting comic: {str(e)}")
                 return None
+                
+    async def get_comic_by_id(self, comic_id: int) -> Optional[Dict]:
+        """Get a comic directly by its numeric ID"""
+        async with aiohttp.ClientSession() as session:
+            try:
+                async with session.get(
+                    f"{self.strapi_url}/api/comics?filters[id][$eq]={comic_id}",
+                    headers=self.headers,
+                    timeout=30
+                ) as response:
+                    if response.status != 200:
+                        print(f"Error getting comic by ID: {response.status}")
+                        return None
+                    
+                    data = await response.json()
+                    if not data.get('data'):
+                        return None
+                    
+                    return data['data']
+            except (aiohttp.ClientError, asyncio.TimeoutError) as e:
+                print(f"Network error when getting comic by ID: {str(e)}")
+                return None
+            except Exception as e:
+                print(f"Unexpected error when getting comic by ID: {str(e)}")
+                return None
+    
 
     async def create_comic(self, comic_data: Dict) -> Dict:
         """Create a new comic with normalized data"""

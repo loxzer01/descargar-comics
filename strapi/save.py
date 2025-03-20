@@ -67,6 +67,41 @@ class ComicManager:
             except Exception as e:
                 print(f"Error finding similar comics: {str(e)}")
                 return []
+                
+    async def get_all_comics(self) -> List[Dict]:
+        """Get all comics from Strapi"""
+        async with aiohttp.ClientSession() as session:
+            try:
+                # Get all comics
+                async with session.get(
+                    f"{STRAPI_URL}/api/comics?populate[episodesAll][fields][0]=id&populate[episodesAll][fields][1]=episode&fields[0]=id&fields[1]=title&fields[2]=documentId&sort=title:asc",
+                    headers=self.headers,
+                    
+                ) as response:
+                    if response.status != 200:
+                        print(f"Error getting all comics: {response.status}")
+                        return []
+                    
+                    data = await response.json()
+                    if not data.get('data'):
+                        return []
+                    
+                    # Format comics list
+                    all_comics = []
+                    for comic in data['data']:
+                        if not comic.get('title'):
+                            continue
+                            
+                        all_comics.append({
+                            'id': comic['id'],
+                            'title': comic['title'],
+                            'documentId': comic.get('documentId', str(comic['id']))
+                        })
+                    
+                    return all_comics
+            except Exception as e:
+                print(f"Error getting all comics: {str(e)}")
+                return []
 
     async def get_comic_by_document_id(self, document_id: str) -> Optional[Dict]:
         """Get a comic by its document_id or find similar comics if not found"""
@@ -203,6 +238,32 @@ class ComicManager:
         except Exception as e:
             print(f"Error extracting comic ID: {str(e)}")
             return None
+    
+    async def get_comic_by_id(self, comic_id: int) -> Optional[Dict]:
+        """Get a comic directly by its numeric ID"""
+        async with aiohttp.ClientSession() as session:
+            try:
+                async with session.get(
+                    f"{STRAPI_URL}/api/comics?filters[id][$eq]={comic_id}",
+                    headers=self.headers,
+                ) as response:
+                    if response.status != 200:
+                        print(f"Error getting comic by ID: {response.status}")
+                        return None
+                    
+                    data = await response.json()
+                    if not data.get('data'):
+                        return None
+                    
+                    return data['data']
+            except (aiohttp.ClientError, asyncio.TimeoutError) as e:
+                print(f"Network error when getting comic by ID: {str(e)}")
+                return None
+            except Exception as e:
+                print(f"Unexpected error when getting comic by ID: {str(e)}")
+                return None
+    
+
 
 
 class EpisodeManager:
@@ -453,9 +514,59 @@ async def save_comic_and_episodes(comic_data: Dict, episodes: List[Dict]) -> Dic
             
             while True:
                 try:
-                    choice = input("\nSeleccione el número del cómic correcto (0 para cancelar): ")
+                    choice = input("\nSeleccione el número del cómic correcto (0 para cancelar, -1 para ver todos los cómics): ")
                     if choice == '0':
                         return {"error": "Selección cancelada por el usuario"}
+                    if choice == '-1':
+                        # Opción para mostrar todos los cómics disponibles
+                        print("\nObteniendo lista completa de cómics...")
+                        all_comics = await comic_manager.get_all_comics()
+                        
+                        if not all_comics:
+                            print("No se encontraron cómics en la base de datos.")
+                            return {"error": "No se encontraron cómics en la base de datos"}
+                        
+                        print("\nLista completa de cómics disponibles:")
+                        # Mostrar todos los cómics en formato paginado
+                        page_size = 20
+                        total_comics = len(all_comics)
+                        total_pages = (total_comics + page_size - 1) // page_size
+                        current_page = 1
+                        
+                        while True:
+                            start_idx = (current_page - 1) * page_size
+                            end_idx = min(start_idx + page_size, total_comics)
+                            
+                            print(f"\nPágina {current_page}/{total_pages} - Mostrando cómics {start_idx+1}-{end_idx} de {total_comics}\n")
+                            
+                            for i, comic in enumerate(all_comics[start_idx:end_idx], start_idx + 1):
+                                print(f"{i}. {comic['title']} (ID: {comic['id']})")
+                            
+                            nav = input("\nSeleccione un número de cómic, 'n' para siguiente página, 'p' para página anterior, 'q' para cancelar: ")
+                            
+                            if nav.lower() == 'q':
+                                return {"error": "Selección cancelada por el usuario"}
+                            elif nav.lower() == 'n' and current_page < total_pages:
+                                current_page += 1
+                            elif nav.lower() == 'p' and current_page > 1:
+                                current_page -= 1
+                            else:
+                                try:
+                                    selection = int(nav)
+                                    if 1 <= selection <= total_comics:
+                                        comic_id = all_comics[selection-1]['id']
+                                        print(f"Seleccionado cómic con ID: {comic_id}")
+                                        # Actualizar similar_comics para mantener consistencia
+                                        similar_comics = [all_comics[selection-1]]
+                                        choice_idx = 0  # Solo hay un elemento
+                                        break
+                                    else:
+                                        print("Selección inválida. Intente de nuevo.")
+                                except ValueError:
+                                    if nav.lower() not in ['n', 'p', 'q']:
+                                        print("Por favor, ingrese un número válido o una opción de navegación.")
+                        break
+                    
                     choice_idx = int(choice) - 1
                     if 0 <= choice_idx < len(similar_comics):
                         comic_id = similar_comics[choice_idx]['id']

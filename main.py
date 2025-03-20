@@ -21,6 +21,7 @@ import time
 from scrapers.m440 import get_m440_chapters as m440_get_chapters_impl
 from scrapers.m440_scraper import scrape_m440 as m440_scrape_chapter_impl
 from scrapers.m440 import process_chapter_links as m440_process_chapter_links_impl
+from scrapers.ikigai_scraper import scrape_ikigai, scrape_ikigai_consecutive
 
 # Importar utilidades comunes
 from utils.file_utils import create_directories, sanitize_filename, create_manga_directory
@@ -41,6 +42,7 @@ def main():
     print("2. M440.in")
     print("3. Inmanga")
     print("4. TMO")
+    print("5. Ikigai")
     
     option = input("Ingresa el número de la opción: ")
     
@@ -126,6 +128,18 @@ def main():
         url = input("Ingresa la URL del capítulo de TMO: ")
         # Función para TMO (pendiente de implementar)
         print("Funcionalidad no implementada aún")
+    elif option == "5":
+        url = input("Ingresa la URL del capítulo de Ikigai: ")
+        download_option = input("¿Deseas descargar las imágenes? (s/n): ").lower()
+        download_images = download_option == 's' or download_option == 'si'
+        
+        # Opción para descargar capítulos consecutivos
+        consecutive_option = input("¿Deseas descargar capítulos consecutivos? (s/n): ").lower()
+        if consecutive_option == 's' or consecutive_option == 'si':
+            num_chapters = input("¿Cuántos capítulos adicionales quieres descargar? (número o 'todos'): ")
+            scrape_ikigai_consecutive(url, download_images, num_chapters)
+        else:
+            scrape_ikigai(url, download_images)
     else:
         print("Opción no válida")
 
@@ -347,7 +361,11 @@ def save_images(manga_title, chapter_number, image_elements, download_images=Tru
     images_info = []
     image_urls = []
     
+    # Conjunto para rastrear URLs únicas y evitar duplicados
+    unique_urls = set()
+    
     # Procesar cada imagen
+    real_index = 0  # Índice para numerar las imágenes únicas
     for index, img in enumerate(image_elements):
         try:
             # Obtener URL de la imagen
@@ -375,12 +393,23 @@ def save_images(manga_title, chapter_number, image_elements, download_images=Tru
             if (img_url.endswith('.jpg') or img_url.endswith('.png') or img_url.endswith('.webp') or 
                 '/uploads/' in img_url.lower() or '/images/' in img_url.lower()):
                 
+                # Verificar si esta URL ya ha sido procesada (evitar duplicados)
+                if img_url in unique_urls:
+                    print(f"Saltando imagen duplicada {index+1}: {img_url}")
+                    continue
+                
+                # Añadir URL al conjunto de URLs únicas
+                unique_urls.add(img_url)
+                
+                # Incrementar el índice real para las imágenes únicas
+                real_index += 1
+                
                 # Nombre de archivo para esta imagen
-                filename = f"{index+1:03d}.jpg"  # Formato: 001.jpg, 002.jpg, etc.
+                filename = f"{real_index:03d}.jpg"  # Formato: 001.jpg, 002.jpg, etc.
                 
                 # si filename tiene un parentesis es una imagen de anuncios
                 if '(' in img_url:
-                    print(f"Saltando imagen {index+1} porque parece ser un anuncio")
+                    print(f"Saltando imagen {real_index} porque parece ser un anuncio")
                     continue
 
                 filepath = os.path.join(chapter_dir, filename)
@@ -389,14 +418,14 @@ def save_images(manga_title, chapter_number, image_elements, download_images=Tru
                 image_urls.append(img_url)
                 images_info.append({
                     'url': img_url,
-                    'number': index + 1,
+                    'number': real_index,
                     'filename': filename
                 })
                 
                 # Descargar imagen solo si se ha solicitado
                 if download_images:
                     download_image(requests.Session(), img_url, filepath)
-                    print(f"Guardada imagen {index+1}/{len(image_elements)}")
+                    print(f"Guardada imagen {real_index}/{len(unique_urls)}")
         except Exception as e:
             print(f"Error al procesar imagen {index+1}: {str(e)}")
     
@@ -408,6 +437,10 @@ def save_images(manga_title, chapter_number, image_elements, download_images=Tru
         'images': images_info,
         'urls': image_urls
     }
+    
+    # Imprimir información sobre duplicados eliminados
+    if len(image_elements) > len(unique_urls):
+        print(f"Se eliminaron {len(image_elements) - len(unique_urls)} imágenes duplicadas.")
     
     save_metadata(chapter_dir, metadata)
     
