@@ -17,7 +17,7 @@ from playwright.async_api import async_playwright, TimeoutError
 
 
 
-# Importar utilidades
+# Importar utilidades goto
 from utils.file_utils import create_chapter_directory, save_metadata, download_image, sanitize_filename
 from utils.http_utils import create_session
 
@@ -71,7 +71,8 @@ async def get_chapters(url):
             
             page = await context.new_page()
             print(f"Navegando a {url}...")
-            await page.goto(url, wait_until="networkidle")
+            await page.goto(url, wait_until="networkidle", timeout=60000)
+            await page.wait_for_timeout(2000)  # Espera 2 segundos tras cargar
             print("Página cargada completamente")
             
             # Obtener información del manga
