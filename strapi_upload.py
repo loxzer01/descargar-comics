@@ -25,9 +25,20 @@ load_dotenv('.env.local')
 # Obtener configuración de Strapi desde variables de entorno
 STRAPI_URL = os.getenv('STRAPI_URL')
 STRAPI_TOKEN = os.getenv('STRAPI_TOKEN')
+STRAPI_URL_API = os.getenv('STRAPI_URL_API')
+STRAPI_TOKEN_API = os.getenv('STRAPI_TOKEN_API')
 
 if not STRAPI_URL or not STRAPI_TOKEN:
     raise ValueError("STRAPI_URL y STRAPI_TOKEN deben estar configurados en .env.local")
+    
+if not STRAPI_URL_API or not STRAPI_TOKEN_API:
+    raise ValueError("STRAPI_URL_API y STRAPI_TOKEN_API deben estar configurados en .env.local")
+    
+print(f"\nConfiguración cargada:")
+print(f"- Servidor local: {STRAPI_URL}")
+print(f"- Servidor API: {STRAPI_URL_API}")
+print(f"\nLas imágenes se distribuirán entre ambos servidores para optimizar la velocidad de carga.")
+print(f"El sistema alternará automáticamente entre servidores para cada imagen.\n")
 
 async def upload_manga_from_directory(manga_dir):
     """
@@ -126,7 +137,7 @@ async def upload_manga_from_directory(manga_dir):
     elif option == "1":
         # Subir un rango de capítulos
         print(f"\n¿Qué rango de capítulos deseas subir de {manga_name}?")
-        print("Ejemplo: 0-33 para subir los capítulos del 1 al 33")
+        print(f"Ejemplo: 0-33 para subir los capítulos del {episodes[0]['episode']} al {episodes[33]['episode'] if len(episodes) > 33 else episodes[-1]['episode']}")
         range_str = input("Rango: ")
         try:
             start, end = map(int, range_str.split('-'))
@@ -134,21 +145,31 @@ async def upload_manga_from_directory(manga_dir):
                 print("Rango no válido")
                 return
             episodes = episodes[start:end]
-            print(f"\nSubiendo capítulos del {start+1} al {end} de {manga_name}...")
+            print(f"\nSubiendo capítulos del {episodes[0]['episode']} al {episodes[-1]['episode']} de {manga_name}...")
         except:
             print("Rango no válido")
             return
     elif option == "2":
         # Subir un capítulo específico
         print(f"\n¿Qué capítulo deseas subir de {manga_name}?")
-        print("Ejemplo: 33 para subir el capítulo 33")
-        chapter_number = input("Capítulo: ")
+        print("Ejemplo: 33 para subir el capítulo 33, o 2.5 para subir el capítulo 2.5")
+        chapter_input = input("Capítulo: ")
         try:
-            chapter_number = int(chapter_number)
-            if chapter_number < 1 or chapter_number > len(episodes):
-                print("Capítulo no válido")
+            # Convertir a float para manejar números decimales
+            chapter_number = float(chapter_input)
+            
+            # Buscar el episodio con ese número de capítulo
+            episode_index = None
+            for i, ep in enumerate(episodes):
+                if ep['episode'] == chapter_number:
+                    episode_index = i
+                    break
+                    
+            if episode_index is None:
+                print(f"No se encontró el capítulo {chapter_number}")
                 return
-            episodes = [episodes[chapter_number-1]]
+                
+            episodes = [episodes[episode_index]]
             print(f"\nSubiendo capítulo {chapter_number} de {manga_name}...")
         except:
             print("Capítulo no válido")

@@ -92,6 +92,7 @@ def get_olympus_chapters(url):
                 if url_match:
                     try:
                         chapter_num = float(url_match.group(1))
+                        # Solo convertir a entero si es un número entero y no tiene parte decimal
                         if chapter_num.is_integer():
                             chapter_num = int(chapter_num)
                     except ValueError:
@@ -180,6 +181,7 @@ def scrape_olympus(url, download_images=True):
             if match:
                 try:
                     chapter_number = float(match.group(1))
+                    # Solo convertir a entero si es un número entero y no tiene parte decimal
                     if chapter_number.is_integer():
                         chapter_number = int(chapter_number)
                 except ValueError:
@@ -191,6 +193,7 @@ def scrape_olympus(url, download_images=True):
             if match:
                 try:
                     chapter_number = float(match.group(1))
+                    # Solo convertir a entero si es un número entero y no tiene parte decimal
                     if chapter_number.is_integer():
                         chapter_number = int(chapter_number)
                 except ValueError:
