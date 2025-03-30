@@ -13,19 +13,57 @@ load_dotenv('.env.local')
 # Configuración de Strapi desde variables de entorno
 STRAPI_URL = os.getenv('STRAPI_URL')
 STRAPI_TOKEN = os.getenv('STRAPI_TOKEN')
+STRAPI_URL_API = os.getenv('STRAPI_URL_API')
+STRAPI_TOKEN_API = os.getenv('STRAPI_TOKEN_API')
 
 if not STRAPI_URL or not STRAPI_TOKEN:
     raise ValueError("Las variables STRAPI_URL y STRAPI_TOKEN deben estar configuradas en .env.local")
+    
+if not STRAPI_URL_API or not STRAPI_TOKEN_API:
+    raise ValueError("Las variables STRAPI_URL_API y STRAPI_TOKEN_API deben estar configuradas en .env.local")
 class ImageUploader:
     def __init__(self):
-        self.headers = {
+        # Configurar headers para ambos servidores
+        self.headers_local = {
             'Authorization': f'Bearer {STRAPI_TOKEN}',
             'Content-Type': 'application/json',
             'Accept': 'application/json'
         }
+        self.headers_api = {
+            'Authorization': f'Bearer {STRAPI_TOKEN_API}',
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        }
         self.base_path = 'comic'
+        # Priorizar el servidor local (0) sobre el API (1)
+        self.server_index = 0
+        # Contador de fallos consecutivos del servidor local
+        self.local_failures = 0
+        # Máximo de fallos consecutivos antes de intentar con el API
+        self.max_local_failures = 3
 
-    async def upload_image(self, url: str, path: str = "comic", as_media: bool = False, filename: str = None, retries: int = 3) -> Dict:
+    async def upload_image(self, url: str, path: str = "comic", as_media: bool = False, filename: str = None, retries: int = 3, recursion_level: int = 0) -> Dict:
+        # Limitar la recursión para evitar el error de profundidad máxima
+        if recursion_level >= 3:
+            print(f"ADVERTENCIA: Se alcanzó el límite de recursión para {url}. Devolviendo error.")
+            return {'url': url, 'error': 'Límite de recursión alcanzado'}
+            
+        # Seleccionar servidor basado en el índice actual
+        # Priorizar el servidor local (0) y solo usar API (1) como respaldo
+        if self.server_index == 0:
+            strapi_url = STRAPI_URL
+            auth_token = STRAPI_TOKEN
+            headers = self.headers_local
+            server_name = "local"
+        else:
+            strapi_url = STRAPI_URL_API
+            auth_token = STRAPI_TOKEN_API
+            headers = self.headers_api
+            server_name = "API"
+        
+        # Ya no alternamos automáticamente, mantenemos el servidor local como prioridad
+        # Solo cambiaremos si hay fallos consecutivos
+        
         for attempt in range(retries):
             try:
                 async with aiohttp.ClientSession() as session:
@@ -53,33 +91,86 @@ class ImageUploader:
                                               filename=filename,
                                               content_type=content_type)
                             
-                            print(f"Subiendo imagen a Strapi: {filename} en {path}")
-                            upload_url = f"{STRAPI_URL}/api/upload"
+                            print(f"Subiendo imagen a servidor Strapi {server_name}: {filename} en {path}")
+                            upload_url = f"{strapi_url}/api/upload"
                             
                             async with session.post(
                                 upload_url,
                                 data=form_data,
-                                headers={'Authorization': f'Bearer {STRAPI_TOKEN}'}
+                                headers={'Authorization': f'Bearer {auth_token}'}
                             ) as upload_response:
-                                print(f"Estado de la respuesta de subida: {upload_response.status}")
+                                print(f"Estado de la respuesta de subida ({server_name}): {upload_response.status}")
                                 if upload_response.status not in (200, 201):
                                     response_text = await upload_response.text()
-                                    raise ValueError(f"Error al subir la imagen a Strapi (Estado {upload_response.status}): {response_text}")
+                                    # Si falla, manejar según el servidor actual
+                                    if attempt == retries - 1:
+                                        if server_name == "local":
+                                            # Si el servidor local falla, incrementar contador de fallos
+                                            self.local_failures += 1
+                                            print(f"Error al subir a servidor local (fallo {self.local_failures}/{self.max_local_failures}), intentando con el servidor API...")
+                                            # Cambiar al servidor API solo si hay suficientes fallos consecutivos
+                                            if self.local_failures >= self.max_local_failures:
+                                                self.server_index = 1
+                                                print(f"Cambiando temporalmente al servidor API después de {self.local_failures} fallos consecutivos del servidor local")
+                                            else:
+                                                # Mantener el servidor local para la próxima imagen
+                                                self.server_index = 0
+                                        else:
+                                            # Si el API falla, volver a intentar con el servidor local
+                                            print(f"Error al subir a servidor API, volviendo al servidor local...")
+                                            self.server_index = 0
+                                        # Reintentar con el servidor seleccionado, incrementando el nivel de recursión
+                                        return await self.upload_image(url, path, as_media, filename, 1, recursion_level + 1)
+                                    raise ValueError(f"Error al subir la imagen a Strapi {server_name} (Estado {upload_response.status}): {response_text}")
                                 try:
-                                    return await upload_response.json()
+                                    result = await upload_response.json()
+                                    print(f"Imagen subida exitosamente al servidor {server_name}")
+                                    # Si la subida al servidor local fue exitosa, resetear el contador de fallos
+                                    if server_name == "local":
+                                        if self.local_failures > 0:
+                                            print(f"Reseteando contador de fallos del servidor local después de una subida exitosa")
+                                            self.local_failures = 0
+                                    # Si estábamos usando el API pero el local ya funciona, volver al local
+                                    elif server_name == "API" and self.local_failures >= self.max_local_failures:
+                                        print("Intentando volver al servidor local para la próxima imagen...")
+                                        self.server_index = 0
+                                        self.local_failures = 0
+                                    return result
                                 except Exception as e:
                                     print(f"Error al parsear la respuesta JSON: {e}")
                                     return {'url': url, 'error': str(e)}
                     else:
                         return {'url': url}
             except Exception as e:
-                print(f"Intento {attempt + 1} fallido para {url}: {str(e)}")
+                print(f"Intento {attempt + 1} fallido para {url} en servidor {server_name}: {str(e)}")
                 if attempt < retries - 1:
                     print("Reintentando...")
                     await asyncio.sleep(1)
                 else:
-                    print("Se agotaron los intentos.")
-                    return {'url': url, 'error': str(e)}
+                    # Si se agotan los intentos con este servidor, intentar con el otro
+                    if server_name == "local":
+                        # Si el servidor local falla, incrementar contador de fallos
+                        self.local_failures += 1
+                        print(f"Intentando con el servidor API después de {self.local_failures} fallos del servidor local...")
+                        # Cambiar al servidor API solo si hay suficientes fallos consecutivos
+                        if self.local_failures >= self.max_local_failures:
+                            self.server_index = 1
+                            print(f"Cambiando temporalmente al servidor API después de {self.local_failures} fallos consecutivos del servidor local")
+                        else:
+                            # Mantener el servidor local para la próxima imagen a pesar del fallo actual
+                            self.server_index = 0
+                        # Reintentar con el servidor seleccionado, incrementando el nivel de recursión
+                        return await self.upload_image(url, path, as_media, filename, 1, recursion_level + 1)
+                    elif server_name == "API":
+                        print("Intentando con el servidor local...")
+                        self.server_index = 0
+                        # Resetear el contador de fallos al volver al servidor local
+                        self.local_failures = 0
+                        # Reintentar con el servidor seleccionado, incrementando el nivel de recursión
+                        return await self.upload_image(url, path, as_media, filename, 1, recursion_level + 1)
+                    else:
+                        print("Se agotaron los intentos en ambos servidores.")
+                        return {'url': url, 'error': str(e)}
 
     async def get_image_size(self, url: str) -> int:
         """Obtiene el tamaño de una imagen en bytes desde su URL."""
@@ -114,8 +205,14 @@ class ImageUploader:
         ]
         
         results = []
+        # Contador para las imágenes procesadas (para identificar las primeras dos)
+        image_count = 0
+        # Contador de errores en las primeras dos imágenes
+        first_images_errors = 0
+        
         for image in images:
-            print(f"Procesando imagen: {image['filename']}")
+            image_count += 1
+            print(f"Procesando imagen {image_count}/{len(images)}: {image['filename']}")
             url_to_upload = image['url']
             
             # Verificar si la URL contiene alguno de los patrones a ignorar
@@ -163,14 +260,40 @@ class ImageUploader:
             try:
                 result = await self.upload_image(url_to_upload, path, as_media, filename, retries)
                 if 'error' in result:
-                    print(f"ERROR CRÍTICO: Falló la subida de la imagen {filename}: {result['error']}")
-                    print(f"Deteniendo la subida del capítulo debido a un error crítico.")
-                    return None  # Detener todo el proceso si falla la subida
+                    # Si es una de las primeras dos imágenes, permitir que falle y continuar
+                    if image_count <= 2:
+                        first_images_errors += 1
+                        print(f"ADVERTENCIA: Falló la subida de la imagen {image_count} (posible anuncio): {filename}")
+                        print(f"Omitiendo esta imagen y continuando con las siguientes...")
+                        continue
+                    else:
+                        # Para el resto de imágenes, mantener el comportamiento original
+                        print(f"ERROR CRÍTICO: Falló la subida de la imagen {filename}: {result['error']}")
+                        # Si ya tenemos suficientes imágenes (más de 2), podemos continuar a pesar del error
+                        if len(results) > 2:
+                            print(f"Ya se han subido {len(results)} imágenes, continuando a pesar del error...")
+                            continue
+                        else:
+                            print(f"Deteniendo la subida del capítulo debido a un error crítico.")
+                            return None  # Detener el proceso solo si no hay suficientes imágenes
                 results.append(result)
             except Exception as e:
-                print(f"ERROR CRÍTICO: Error al subir {url_to_upload}: {str(e)}")
-                print(f"Deteniendo la subida del capítulo debido a un error crítico.")
-                return None  # Detener todo el proceso si hay una excepción
+                # Si es una de las primeras dos imágenes, permitir que falle y continuar
+                if image_count <= 2:
+                    first_images_errors += 1
+                    print(f"ADVERTENCIA: Error al subir la imagen {image_count} (posible anuncio) {url_to_upload}: {str(e)}")
+                    print(f"Omitiendo esta imagen y continuando con las siguientes...")
+                    continue
+                else:
+                    # Para el resto de imágenes, ser más estricto pero aún permitir continuar si ya tenemos suficientes
+                    print(f"ERROR: Error al subir {url_to_upload}: {str(e)}")
+                    # Si ya tenemos suficientes imágenes (más de 2), podemos continuar a pesar del error
+                    if len(results) > 2:
+                        print(f"Ya se han subido {len(results)} imágenes, continuando a pesar del error...")
+                        continue
+                    else:
+                        print(f"Deteniendo la subida del capítulo debido a un error crítico.")
+                        return None  # Detener el proceso solo si no hay suficientes imágenes
         return results
         
 # Función principal

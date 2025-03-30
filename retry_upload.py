@@ -99,14 +99,6 @@ class RetryUploader:
             'images': [],
             'isImageInURL': False,
             'views': 0,
-            'reactions': {
-                'like': 0,
-                'love': 0,
-                'angry': 0,
-                'sad': 0,
-                'funny': 0,
-                'surprised': 0,
-            },
             'episode': episode_data['episode'],
             'comic': {
                 'connect': [comic_id]

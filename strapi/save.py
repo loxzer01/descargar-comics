@@ -367,14 +367,6 @@ class EpisodeManager:
             'images': [],
             'isImageInURL': False,
             'views': 0,
-            'reactions': {
-                'like': 0,
-                'love': 0,
-                'angry': 0,
-                'sad': 0,
-                'funny': 0,
-                'surprised': 0,
-            },
             'episode': episode_data['episode'],
             'comic': {
                 'connect': [comic_id]
@@ -577,8 +569,55 @@ async def save_comic_and_episodes(comic_data: Dict, episodes: List[Dict]) -> Dic
                     print("Por favor, ingrese un número válido.")
         
         if not comic_id:
-            print("No se encontraron cómics similares o se canceló la selección.")
-            return {"error": "No se encontraron cómics similares o se canceló la selección."}
+            print("No se encontraron cómics similares. Mostrando todos los cómics disponibles...")
+            # Automatically select option -1 when no similar comics are found
+            print("\nObteniendo lista completa de cómics...")
+            all_comics = await comic_manager.get_all_comics()
+            
+            if not all_comics:
+                print("No se encontraron cómics en la base de datos.")
+                return {"error": "No se encontraron cómics en la base de datos"}
+            
+            print("\nLista completa de cómics disponibles:")
+            # Mostrar todos los cómics en formato paginado
+            page_size = 20
+            total_comics = len(all_comics)
+            total_pages = (total_comics + page_size - 1) // page_size
+            current_page = 1
+            
+            while True:
+                start_idx = (current_page - 1) * page_size
+                end_idx = min(start_idx + page_size, total_comics)
+                
+                print(f"\nPágina {current_page}/{total_pages} - Mostrando cómics {start_idx+1}-{end_idx} de {total_comics}\n")
+                
+                for i, comic in enumerate(all_comics[start_idx:end_idx], start_idx + 1):
+                    print(f"{i}. {comic['title']} (ID: {comic['id']})")
+                
+                nav = input("\nSeleccione un número de cómic, 'n' para siguiente página, 'p' para página anterior, 'q' para cancelar: ")
+                
+                if nav.lower() == 'q':
+                    return {"error": "Selección cancelada por el usuario"}
+                elif nav.lower() == 'n' and current_page < total_pages:
+                    current_page += 1
+                elif nav.lower() == 'p' and current_page > 1:
+                    current_page -= 1
+                else:
+                    try:
+                        selection = int(nav)
+                        if 1 <= selection <= total_comics:
+                            comic_id = all_comics[selection-1]['id']
+                            print(f"Seleccionado cómic con ID: {comic_id}")
+                            # Actualizar similar_comics para mantener consistencia
+                            similar_comics = [all_comics[selection-1]]
+                            choice_idx = 0  # Solo hay un elemento
+                            break
+                        else:
+                            print("Selección inválida. Intente de nuevo.")
+                    except ValueError:
+                        if nav.lower() not in ['n', 'p', 'q']:
+                            print("Por favor, ingrese un número válido o una opción de navegación.")
+            # End of automatic option -1 selection
 
     # Create or update episodes
     print(f"Procesando {len(episodes)} episodios para el cómic ID: {comic_id}")

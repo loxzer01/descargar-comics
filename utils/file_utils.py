@@ -49,6 +49,7 @@ def create_chapter_directory(manga_title, chapter_number, chapter_title=None, fo
     manga_dir = create_manga_directory(manga_title)
     
     # Sanitizar número de capítulo para nombre de directorio
+    # Solo convertir a entero si es un número entero (sin parte decimal)
     if isinstance(chapter_number, float) and chapter_number.is_integer():
         chapter_number = int(chapter_number)
     

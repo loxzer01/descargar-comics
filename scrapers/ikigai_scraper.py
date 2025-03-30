@@ -29,23 +29,25 @@ def scrape_ikigai(url, download_images=True):
         # Verificar que la URL sea de Ikigai
         parsed_url = urlparse(url)
         
+        # Obtener el dominio base para configurar los headers correctamente
+        base_domain = parsed_url.netloc
+        base_url = f"{parsed_url.scheme}://{base_domain}"
+        
         # Obtener el contenido de la página con headers específicos para simular un navegador real
         # y manejar correctamente las solicitudes CORS
         headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
             'Accept-Language': 'es-ES,es;q=0.9,en;q=0.8',
-            'Origin': 'https://visualikigai.cursimru.com',
-            'Referer': 'https://visualikigai.cursimru.com/',
+            'Origin': base_url,
+            'Referer': base_url + '/',
             'Sec-Fetch-Dest': 'document',
             'Sec-Fetch-Mode': 'navigate',
             'Sec-Fetch-Site': 'same-origin',
             'Sec-Fetch-User': '?1',
             'Upgrade-Insecure-Requests': '1',
-            'X-Requested-With': 'XMLHttpRequest',
             'Cache-Control': 'max-age=0',
             'Connection': 'keep-alive',
-            'Cookie': '',  # Se llenará automáticamente por la sesión
             'DNT': '1',
             'Pragma': 'no-cache'
         }
@@ -54,9 +56,45 @@ def scrape_ikigai(url, download_images=True):
         session = requests.Session()
         session.headers.update(headers)
         
-        response = session.get(url)
-        if response.status_code != 200:
-            print(f"Error al acceder a la URL: {response.status_code}")
+        # Intentar obtener la página con reintentos y delays para evitar bloqueos
+        max_retries = 3
+        retry_delay = 2
+        
+        for retry in range(max_retries):
+            try:
+                # Primero, visitar la página principal para obtener cookies
+                print(f"Visitando la página principal de {base_url} para obtener cookies...")
+                session.get(base_url, timeout=10)
+                
+                # Luego intentar acceder a la URL del capítulo
+                print(f"Intentando acceder a {url} (intento {retry+1}/{max_retries})...")
+                response = session.get(url, timeout=10)
+                
+                if response.status_code == 200:
+                    print("Acceso exitoso a la página.")
+                    break
+                elif response.status_code == 403:
+                    print(f"Error 403 Forbidden al acceder a la URL (intento {retry+1}/{max_retries})")
+                    if retry < max_retries - 1:
+                        wait_time = retry_delay * (retry + 1)
+                        print(f"Esperando {wait_time} segundos antes de reintentar...")
+                        time.sleep(wait_time)
+                else:
+                    print(f"Error al acceder a la URL: {response.status_code} (intento {retry+1}/{max_retries})")
+                    if retry < max_retries - 1:
+                        wait_time = retry_delay * (retry + 1)
+                        print(f"Esperando {wait_time} segundos antes de reintentar...")
+                        time.sleep(wait_time)
+            except Exception as e:
+                print(f"Error de conexión (intento {retry+1}/{max_retries}): {str(e)}")
+                if retry < max_retries - 1:
+                    wait_time = retry_delay * (retry + 1)
+                    print(f"Esperando {wait_time} segundos antes de reintentar...")
+                    time.sleep(wait_time)
+        
+        # Verificar si después de los reintentos se pudo acceder a la página
+        if not hasattr(response, 'status_code') or response.status_code != 200:
+            print(f"Error al acceder a la URL después de {max_retries} intentos.")
             return
             
         # Guardar la respuesta en un archivo temporal
@@ -82,12 +120,18 @@ def scrape_ikigai(url, download_images=True):
         chapter_element = soup.select_one("ul.flex-center.gap-2.text-xs.font-medium.pt-4 li:nth-child(2)")
         if chapter_element:
             chapter_text = chapter_element.text.strip()
-            # Extraer solo los dígitos y convertir a entero
+            # Extraer números, incluyendo decimales
             try:
-                chapter_number = int(re.search(r'\d+', chapter_text).group())
-                print(f"Capítulo: {chapter_number}")
+                # Buscar patrones como '2.5' o '6.05' o simplemente '5'
+                match = re.search(r'\d+(?:\.\d+)?', chapter_text)
+                if match:
+                    chapter_number = float(match.group())
+                    # Convertir a entero si es un número entero
+                    if chapter_number.is_integer():
+                        chapter_number = int(chapter_number)
+                    print(f"Capítulo: {chapter_number}")
             except (AttributeError, ValueError):
-                print("No se pudo convertir el número de capítulo a entero. Usando 0 como valor predeterminado.")
+                print("No se pudo convertir el número de capítulo. Usando 0 como valor predeterminado.")
         
         # Extraer URLs de capítulos anterior y siguiente para navegación
         prev_chapter_url = None

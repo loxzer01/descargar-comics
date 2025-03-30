@@ -43,6 +43,7 @@ def main():
     print("3. Inmanga")
     print("4. TMO")
     print("5. Ikigai")
+    print("6. LeerCapitulo")
     
     option = input("Ingresa el número de la opción: ")
     
@@ -140,6 +141,20 @@ def main():
             scrape_ikigai_consecutive(url, download_images, num_chapters)
         else:
             scrape_ikigai(url, download_images)
+    elif option == "6":
+        url = input("Ingresa la URL del capítulo de LeerCapitulo: ")
+        download_option = input("¿Deseas descargar las imágenes? (s/n): ").lower()
+        download_images = download_option == 's' or download_option == 'si'
+        
+        # Opción para descargar capítulos consecutivos
+        consecutive_option = input("¿Deseas descargar capítulos consecutivos? (s/n): ").lower()
+        if consecutive_option == 's' or consecutive_option == 'si':
+            num_chapters = input("¿Cuántos capítulos adicionales quieres descargar? (número o 'todos'): ")
+            from scrapers.leercapitulo_scraper import scrape_leercapitulo_consecutive
+            scrape_leercapitulo_consecutive(url, download_images, num_chapters)
+        else:
+            from scrapers.leercapitulo_scraper import scrape_leercapitulo
+            scrape_leercapitulo(url, download_images)
     else:
         print("Opción no válida")
 
@@ -189,13 +204,17 @@ def scrape_olympus(url, download_images=True):
         chapter_element = soup.select_one("div.flex-center.gap-4 b.text-xs.md\\:text-base")
         if chapter_element:
             chapter_text = chapter_element.text.strip()
-            # Extraer solo los dígitos y convertir a entero
+            # Extraer dígitos, incluyendo decimales, y convertir a float o int según corresponda
             try:
-                chapter_number = int(re.search(r'\d+', chapter_text).group())
-                print(f"Capítulo: {chapter_text}")
-                print(f"Capítulo: {chapter_text}")
+                match = re.search(r'\d+(?:\.\d+)?', chapter_text)
+                if match:
+                    chapter_number = float(match.group())
+                    # Convertir a entero solo si es un número entero
+                    if chapter_number.is_integer():
+                        chapter_number = int(chapter_number)
+                    print(f"Capítulo: {chapter_text}")
             except (AttributeError, ValueError):
-                print("No se pudo convertir el número de capítulo a entero. Usando 0 como valor predeterminado.")
+                print("No se pudo convertir el número de capítulo. Usando 0 como valor predeterminado.")
         
         # Extraer URLs de capítulos anterior y siguiente para navegación
         prev_chapter_url = None
@@ -235,11 +254,14 @@ def scrape_olympus(url, download_images=True):
                     if potential_title and potential_title != manga_title:
                         manga_title = potential_title.rstrip('.')
                     
-                    # Extraer número de capítulo
+                    # Extraer número de capítulo, incluyendo decimales
                     if len(parts) >= 2 and "capitulo" in parts[1].lower():
-                        chapter_match = re.search(r'capitulo\s+(\d+)', parts[1].lower())
+                        chapter_match = re.search(r'capitulo\s+(\d+(?:\.\d+)?)', parts[1].lower())
                         if chapter_match and chapter_number == 0:
-                            chapter_number = int(chapter_match.group(1))
+                            chapter_number = float(chapter_match.group(1))
+                            # Convertir a entero solo si es un número entero
+                            if chapter_number.is_integer():
+                                chapter_number = int(chapter_number)
                         
                         # capituloStr = str(chapter_number)
                         # if int(capituloStr.split('.')[1]) > 0:
@@ -407,10 +429,10 @@ def save_images(manga_title, chapter_number, image_elements, download_images=Tru
                 # Nombre de archivo para esta imagen
                 filename = f"{real_index:03d}.jpg"  # Formato: 001.jpg, 002.jpg, etc.
                 
-                # si filename tiene un parentesis es una imagen de anuncios
-                if '(' in img_url:
-                    print(f"Saltando imagen {real_index} porque parece ser un anuncio")
-                    continue
+                # # si filename tiene un parentesis es una imagen de anuncios
+                # if '(' in img_url:
+                #     print(f"Saltando imagen {real_index} porque parece ser un anuncio")
+                #     continue
 
                 filepath = os.path.join(chapter_dir, filename)
                 
