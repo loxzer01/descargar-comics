@@ -1,0 +1,129 @@
+{
+    "manga_title": "El perdedor pelea muy bien",
+    "chapter_number": 64,
+    "image_count": 20,
+    "images": [
+        {
+            "url": "https://media.ikigaimangas.cloud/series/1043596934846251011/1055456863372509187/0.1.webp",
+            "number": 1,
+            "filename": "001.jpg"
+        },
+        {
+            "url": "https://media.ikigaimangas.cloud/series/1043596934846251011/1055456863372509187/0.2.webp",
+            "number": 2,
+            "filename": "002.jpg"
+        },
+        {
+            "url": "https://media.ikigaimangas.cloud/series/1043596934846251011/1055456863372509187/2 (1).webp",
+            "number": 3,
+            "filename": "003.jpg"
+        },
+        {
+            "url": "https://media.ikigaimangas.cloud/series/1043596934846251011/1055456863372509187/2 (2).webp",
+            "number": 4,
+            "filename": "004.jpg"
+        },
+        {
+            "url": "https://media.ikigaimangas.cloud/series/1043596934846251011/1055456863372509187/2 (3).webp",
+            "number": 5,
+            "filename": "005.jpg"
+        },
+        {
+            "url": "https://media.ikigaimangas.cloud/series/1043596934846251011/1055456863372509187/2 (4).webp",
+            "number": 6,
+            "filename": "006.jpg"
+        },
+        {
+            "url": "https://media.ikigaimangas.cloud/series/1043596934846251011/1055456863372509187/2 (5).webp",
+            "number": 7,
+            "filename": "007.jpg"
+        },
+        {
+            "url": "https://media.ikigaimangas.cloud/series/1043596934846251011/1055456863372509187/2 (6).webp",
+            "number": 8,
+            "filename": "008.jpg"
+        },
+        {
+            "url": "https://media.ikigaimangas.cloud/series/1043596934846251011/1055456863372509187/2 (7).webp",
+            "number": 9,
+            "filename": "009.jpg"
+        },
+        {
+            "url": "https://media.ikigaimangas.cloud/series/1043596934846251011/1055456863372509187/2 (8).webp",
+            "number": 10,
+            "filename": "010.jpg"
+        },
+        {
+            "url": "https://media.ikigaimangas.cloud/series/1043596934846251011/1055456863372509187/2 (9).webp",
+            "number": 11,
+            "filename": "011.jpg"
+        },
+        {
+            "url": "https://media.ikigaimangas.cloud/series/1043596934846251011/1055456863372509187/2 (10).webp",
+            "number": 12,
+            "filename": "012.jpg"
+        },
+        {
+            "url": "https://media.ikigaimangas.cloud/series/1043596934846251011/1055456863372509187/2 (11).webp",
+            "number": 13,
+            "filename": "013.jpg"
+        },
+        {
+            "url": "https://media.ikigaimangas.cloud/series/1043596934846251011/1055456863372509187/2 (12).webp",
+            "number": 14,
+            "filename": "014.jpg"
+        },
+        {
+            "url": "https://media.ikigaimangas.cloud/series/1043596934846251011/1055456863372509187/2 (13).webp",
+            "number": 15,
+            "filename": "015.jpg"
+        },
+        {
+            "url": "https://media.ikigaimangas.cloud/series/1043596934846251011/1055456863372509187/2 (14).webp",
+            "number": 16,
+            "filename": "016.jpg"
+        },
+        {
+            "url": "https://media.ikigaimangas.cloud/series/1043596934846251011/1055456863372509187/2 (15).webp",
+            "number": 17,
+            "filename": "017.jpg"
+        },
+        {
+            "url": "https://media.ikigaimangas.cloud/series/1043596934846251011/1055456863372509187/2 (16).webp",
+            "number": 18,
+            "filename": "018.jpg"
+        },
+        {
+            "url": "https://media.ikigaimangas.cloud/series/1043596934846251011/1055456863372509187/2 (17).webp",
+            "number": 19,
+            "filename": "019.jpg"
+        },
+        {
+            "url": "https://media.ikigaimangas.cloud/series/1043596934846251011/1055456863372509187/200.webp",
+            "number": 20,
+            "filename": "020.jpg"
+        }
+    ],
+    "urls": [
+        "https://media.ikigaimangas.cloud/series/1043596934846251011/1055456863372509187/0.1.webp",
+        "https://media.ikigaimangas.cloud/series/1043596934846251011/1055456863372509187/0.2.webp",
+        "https://media.ikigaimangas.cloud/series/1043596934846251011/1055456863372509187/2 (1).webp",
+        "https://media.ikigaimangas.cloud/series/1043596934846251011/1055456863372509187/2 (2).webp",
+        "https://media.ikigaimangas.cloud/series/1043596934846251011/1055456863372509187/2 (3).webp",
+        "https://media.ikigaimangas.cloud/series/1043596934846251011/1055456863372509187/2 (4).webp",
+        "https://media.ikigaimangas.cloud/series/1043596934846251011/1055456863372509187/2 (5).webp",
+        "https://media.ikigaimangas.cloud/series/1043596934846251011/1055456863372509187/2 (6).webp",
+        "https://media.ikigaimangas.cloud/series/1043596934846251011/1055456863372509187/2 (7).webp",
+        "https://media.ikigaimangas.cloud/series/1043596934846251011/1055456863372509187/2 (8).webp",
+        "https://media.ikigaimangas.cloud/series/1043596934846251011/1055456863372509187/2 (9).webp",
+        "https://media.ikigaimangas.cloud/series/1043596934846251011/1055456863372509187/2 (10).webp",
+        "https://media.ikigaimangas.cloud/series/1043596934846251011/1055456863372509187/2 (11).webp",
+        "https://media.ikigaimangas.cloud/series/1043596934846251011/1055456863372509187/2 (12).webp",
+        "https://media.ikigaimangas.cloud/series/1043596934846251011/1055456863372509187/2 (13).webp",
+        "https://media.ikigaimangas.cloud/series/1043596934846251011/1055456863372509187/2 (14).webp",
+        "https://media.ikigaimangas.cloud/series/1043596934846251011/1055456863372509187/2 (15).webp",
+        "https://media.ikigaimangas.cloud/series/1043596934846251011/1055456863372509187/2 (16).webp",
+        "https://media.ikigaimangas.cloud/series/1043596934846251011/1055456863372509187/2 (17).webp",
+        "https://media.ikigaimangas.cloud/series/1043596934846251011/1055456863372509187/200.webp"
+    ]
+}
